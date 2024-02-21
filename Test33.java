@@ -377,6 +377,29 @@ public class Test33 {
         return new ArrayList<T>(Arrays.asList(args));
     }
 
+    public int findMinDifference(List<String> timePoints) {
+        int[] resourceArray = new int[timePoints.size()];
+        for (int i = 0; i < timePoints.size(); i++) {
+            String temp1 = timePoints.get(i);
+            String[] temp2 = temp1.split(":");
+            resourceArray[i] = Integer.parseInt(temp2[0]) * 60 + Integer.parseInt(temp2[1]);
+        }
+        Arrays.sort(resourceArray);
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < resourceArray.length - 1; i++) {
+            if(resourceArray[i] == resourceArray[i + 1]){
+                return 0;
+            } else {
+                int temp3 = resourceArray[i + 1] - resourceArray[i];
+                min = Math.min(min, temp3);
+            }
+        }
+        int min1 = resourceArray[0] + 24 * 60;
+        min1 = min1 - resourceArray[resourceArray.length - 1];
+        min = Math.min(min, min1);
+        return min;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
