@@ -400,6 +400,38 @@ public class Test33 {
         return min;
     }
 
+    public int getLongestSize(List<List<Integer>> dataList){
+        if(dataList.get(0).size() == 0){
+            return 0;
+        }
+        List<Integer> storageList = new ArrayList<Integer>();
+        for(List<Integer> l : dataList){
+            int n = 1;
+            for(int i = 0; i < l.size() - 1; i++){
+                if(!l.get(i).equals(l.get(i + 1))){
+                    n++;
+                } else {
+                    if(n != 1) {
+                        storageList.add(n);
+                    }
+                    n = 1;
+                }
+            }
+            if(n != 1) {
+                storageList.add(n);
+            }
+        }
+        if(storageList.size() == 0){
+            return 1;
+        } else {
+            int max = storageList.get(0);
+            for(int n : storageList){
+                max = Math.max(max, n);
+            }
+            return max;
+        }
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -443,6 +475,22 @@ public class Test33 {
         int result9 = new Test33().thirdMax(nums9);
         int[] nums10 = {1,2,3,6,2,3,4,7,8};
         boolean result10 = new Test33().isNStraightHand(nums10, 3);
-        System.out.println(result10);
+        List<List<Integer>> list5 = new ArrayList<List<Integer>>();
+        List<Integer> list6 = new ArrayList<Integer>();
+        List<Integer> list7 = new ArrayList<Integer>();
+        List<Integer> list8 = new ArrayList<Integer>();
+        list6.add(1);
+        list6.add(2);
+        list6.add(1);
+        list6.add(2);
+        list7.add(1);
+        list7.add(2);
+        list7.add(2);
+        list8.add(2);
+        list5.add(list6);
+        list5.add(list7);
+        list5.add(list8);
+        int result11 = new Test33().getLongestSize(list5);
+        System.out.println(result11);
     }
 }
