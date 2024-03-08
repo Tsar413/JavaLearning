@@ -432,6 +432,50 @@ public class Test33 {
         }
     }
 
+    public int[][] reconstructQueue(int[][] people) {
+        Map<Integer, List<Integer>> data = collatingData(people);
+        List<List<Integer>> resultList = reconstructList(data);
+        int[][] result = new int[people.length][2];
+        for(int i = 0; i < resultList.size(); i++){
+            result[i][0] = resultList.get(i).get(0);
+            result[i][1] = resultList.get(i).get(1);
+        }
+        return result;
+    }
+
+    public List<List<Integer>> reconstructList(Map<Integer, List<Integer>> data) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        List<Integer> keyList = new ArrayList(data.keySet());
+        System.out.println(keyList);
+        for(int i = keyList.size() - 1; i >= 0; i--){
+            List<Integer> valueList = data.get(keyList.get(i));
+            for(int v : valueList){
+                List<Integer> tempList = new ArrayList<Integer>();
+                tempList.add(keyList.get(i));
+                tempList.add(v);
+                result.add(v, tempList);
+            }
+        }
+        return result;
+    }
+
+    public Map<Integer, List<Integer>> collatingData(int[][] people){
+        Map<Integer, List<Integer>> map = new TreeMap<Integer, List<Integer>>();
+        for(int i = 0; i < people.length; i++) {
+            if(!map.containsKey(people[i][0])) {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(people[i][1]);
+                map.put(people[i][0], list);
+            } else {
+                List<Integer> list = map.get(people[i][0]);
+                list.add(people[i][1]);
+                Collections.sort(list);
+                map.put(people[i][0], list);
+            }
+        }
+        return map;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -491,6 +535,8 @@ public class Test33 {
         list5.add(list7);
         list5.add(list8);
         int result11 = new Test33().getLongestSize(list5);
-        System.out.println(result11);
+        int[][] people = {{7,0}, {4,4},{7,1},{5,0},{6,1},{5,2}};
+        people = new Test33().reconstructQueue(people);
+        System.out.println(Arrays.deepToString(people));
     }
 }
