@@ -446,7 +446,6 @@ public class Test33 {
     public List<List<Integer>> reconstructList(Map<Integer, List<Integer>> data) {
         List<List<Integer>> result = new ArrayList<List<Integer>>();
         List<Integer> keyList = new ArrayList(data.keySet());
-        System.out.println(keyList);
         for(int i = keyList.size() - 1; i >= 0; i--){
             List<Integer> valueList = data.get(keyList.get(i));
             for(int v : valueList){
@@ -474,6 +473,45 @@ public class Test33 {
             }
         }
         return map;
+    }
+
+    public int bagOfTokensScore(int[] tokens, int power) {
+        Arrays.sort(tokens);
+        int low = 0;
+        int high = tokens.length - 1;
+        if(tokens.length == 0){
+            return 0;
+        }
+        if(tokens.length == 1){
+            if(tokens[0] <= power){
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            int result = 0;
+            while(low <= high){
+                if(low < high){
+                    if(tokens[low] <= power){
+                        power -= tokens[low];
+                        result++;
+                        low++;
+                    } else if(tokens[low] > power && result != 0){
+                        power += tokens[high];
+                        result--;
+                        high--;
+                    } else if(tokens[low] > power && result == 0){
+                        break;
+                    }
+                } else {
+                    if(tokens[low] <= power){
+                        result++;
+                    }
+                    break;
+                }
+            }
+            return result;
+        }
     }
 
     public static void main(String[] args) {
@@ -537,6 +575,8 @@ public class Test33 {
         int result11 = new Test33().getLongestSize(list5);
         int[][] people = {{7,0}, {4,4},{7,1},{5,0},{6,1},{5,2}};
         people = new Test33().reconstructQueue(people);
-        System.out.println(Arrays.deepToString(people));
+        int[] nums11 = {200, 100};
+        int result12 = new Test33().bagOfTokensScore(nums11, 150);
+        System.out.println(result12);
     }
 }
