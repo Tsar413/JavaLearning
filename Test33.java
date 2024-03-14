@@ -514,6 +514,39 @@ public class Test33 {
         }
     }
 
+    public int findMinArrowShots(int[][] points) {
+        for(int i = 0; i < points.length; i++){
+            for(int j = 0; j < i; j++){
+                if(points[j][1] < points[i][0] || points[i][1] < points[j][0]){
+                    continue;
+                } else if(points[j][0] <= points[i][1] && points[j][1] >= points[i][1] && points[j][0] >= points[i][0]){
+                    points[i][0] = points[j][0];
+                    points[j][0] = 0;
+                    points[j][1] = 0;
+                } else if(points[j][0] <= points[i][0] && points[j][1] >= points[i][1]){
+                    points[j][0] = 0;
+                    points[j][1] = 0;
+                } else if(points[j][0] >= points[i][0] && points[j][1] <= points[i][1]){
+                    points[i][0] = points[j][0];
+                    points[i][1] = points[j][1];
+                    points[j][0] = 0;
+                    points[j][1] = 0;
+                } else if(points[j][0] <= points[i][0] && points[j][1] >= points[i][0] && points[j][1] <= points[i][1]){
+                    points[i][1] = points[j][1];
+                    points[j][0] = 0;
+                    points[j][1] = 0;
+                }
+            }
+        }
+        int num = 0;
+        for(int i = 0; i < points.length; i++){
+            if(points[i][0] != 0 && points[i][1] != 0){
+                num++;
+            }
+        }
+        return num;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -577,6 +610,10 @@ public class Test33 {
         people = new Test33().reconstructQueue(people);
         int[] nums11 = {200, 100};
         int result12 = new Test33().bagOfTokensScore(nums11, 150);
-        System.out.println(result12);
+        int[][] nums12 = {{4289383,51220269},{81692777,96329692},{57747793,81986128},
+                {19885386,69645878},{96516649,186158070},{25202362,75692389},{83368690,85888749},{44897763,112411689},
+                {65180540,105563966},{4089172,7544908}};
+        int result13 = new Test33().findMinArrowShots(nums12);
+        System.out.println(result13);
     }
 }
