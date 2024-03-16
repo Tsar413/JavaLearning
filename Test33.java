@@ -547,6 +547,85 @@ public class Test33 {
         return num;
     }
 
+    public int[] rearrangeBarcodes(int[] barcodes) {
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for(int n : barcodes){
+            if(map.containsKey(n)){
+                int t = map.get(n);
+                t++;
+                map.put(n, t);
+            } else {
+                map.put(n, 1);
+            }
+        }
+        Set<Integer> set = map.keySet();
+        List<Integer> keys = new ArrayList<Integer>(set);
+        int maxValue = map.get(keys.get(0));
+        int maxKey = keys.get(0);
+        for(int k : keys){
+            int v = map.get(k);
+            if(v > maxValue){
+                maxKey = k;
+                maxValue = v;
+            }
+        }
+        List<Integer> result = new ArrayList<Integer>();
+        for(int i = 0; i < maxValue; i++){
+            result.add(maxKey);
+        }
+        if(maxValue > barcodes.length / 2){
+            int location = 1;
+            for(int k : keys){
+                if(k != maxKey){
+                    for(int i = 0; i < map.get(k); i++){
+                        if(location < barcodes.length){
+                            result.add(location, k);
+                            location += 2;
+                        } else {
+                            result.add(k);
+                        }
+
+                    }
+                }
+            }
+        } else if(maxValue == barcodes.length / 2){
+            int location = 0;
+            for(int k : keys){
+                if(k != maxKey){
+                    for(int i = 0; i < map.get(k); i++){
+                        if(location < barcodes.length){
+                            result.add(location, k);
+                            location += 2;
+                        } else {
+                            result.add(k);
+                        }
+
+                    }
+                }
+            }
+        } else {
+            int location = 0;
+            for(int k : keys){
+                if(k != maxKey){
+                    for(int i = 0; i < map.get(k); i++){
+                        if(location < barcodes.length){
+                            result.add(location, k);
+                            location += 2;
+                        }
+                        if(location >= result.size()){
+                            location = 0;
+                        }
+                    }
+                }
+            }
+        }
+        int[] resultArray = new int[result.size()];
+        for(int i = 0; i < resultArray.length; i++){
+            resultArray[i] = result.get(i);
+        }
+        return resultArray;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -614,6 +693,8 @@ public class Test33 {
                 {19885386,69645878},{96516649,186158070},{25202362,75692389},{83368690,85888749},{44897763,112411689},
                 {65180540,105563966},{4089172,7544908}};
         int result13 = new Test33().findMinArrowShots(nums12);
-        System.out.println(result13);
+        int[] nums13 = {1,1,1,2,2};
+        int[] result14 = new Test33().rearrangeBarcodes((nums13));
+        System.out.println(Arrays.toString(result14));
     }
 }
