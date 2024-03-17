@@ -626,6 +626,54 @@ public class Test33 {
         return resultArray;
     }
 
+    public int numMatchingSubseq(String s, String[] words) {
+        Map<Character, List<Integer>> map = new HashMap<Character, List<Integer>>();
+        for(int i = 0; i < s.length(); i++){
+            if(map.containsKey(s.charAt(i))){
+                List<Integer> list = map.get(s.charAt(i));
+                list.add(i);
+                map.put(s.charAt(i), list);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(i);
+                map.put(s.charAt(i), list);
+            }
+        }
+        int result = 0;
+        for(String word : words){
+            int length = word.length();
+            int endIndex = -1;
+            boolean judge = true;
+            for(int i = 0; i < length && judge; i++){
+                if(!map.containsKey(word.charAt(i))){
+                    judge = false;
+                    break;
+                } else {
+                    List<Integer> storageList = map.get(word.charAt(i));
+                    int left = 0;
+                    int right = storageList.size() - 1;
+                    while(left < right){
+                        int mid = (left + right) / 2;
+                        if(storageList.get(mid) > endIndex){
+                            right = mid;
+                        } else {
+                            left = mid + 1;
+                        }
+                    }
+                    if(right < 0 || storageList.get(right) <= endIndex){
+                        judge = false;
+                    } else {
+                        endIndex = storageList.get(right);
+                    }
+                }
+            }
+            if(judge){
+                result++;
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
