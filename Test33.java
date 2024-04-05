@@ -674,6 +674,89 @@ public class Test33 {
         return result;
     }
 
+    public int[] getQuery(String[] queries){
+        int[] result = new int[queries.length];
+        for(int i = 0; i < queries.length; i++){
+            Map<Character, Integer> map = new TreeMap<Character, Integer>();
+            for(int j = 0; j < queries[i].length(); j++){
+                char t = queries[i].charAt(j);
+                if(map.containsKey(t)){
+                    int v = map.get(t);
+                    v++;
+                    map.put(t, v);
+                } else {
+                    map.put(t, 1);
+                }
+            }
+            Collection<Integer> values = map.values();
+            Integer firstValue = values.toArray(new Integer[0])[0];
+            result[i] = firstValue;
+        }
+        return result;
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        int firstIndex = 0;
+        Set<List<Integer>> set = new HashSet<List<Integer>>();
+        while(firstIndex < nums.length - 2){
+            int secondIndex = firstIndex + 1;
+            int thirdIndex = nums.length - 1;
+            while(secondIndex < thirdIndex){
+                if((nums[firstIndex] + nums[secondIndex] + nums[thirdIndex]) == 0){
+                    List<Integer> list = new ArrayList<Integer>();
+                    list.add(nums[firstIndex]);
+                    list.add(nums[secondIndex]);
+                    list.add(nums[thirdIndex]);
+                    set.add(list);
+                    thirdIndex--;
+                } else if((nums[firstIndex] + nums[secondIndex] + nums[thirdIndex]) < 0){
+                    secondIndex++;
+                } else {
+                    thirdIndex--;
+                }
+            }
+            firstIndex++;
+        }
+        List<List<Integer>> result = new ArrayList<List<Integer>>(set);
+        return result;
+    }
+
+    public int minSubArrayLen(int target, int[] nums) {
+        int[] addNums = new int[nums.length];
+        int sum = 0;
+        for(int i = 0; i < addNums.length; i++){
+            sum += nums[i];
+            addNums[i] = sum;
+        }
+        int index = -1;
+        int result = 0;
+        while(index < addNums.length){
+            if(index == -1){
+                for(int i = index + 1; i < addNums.length; i++){
+                    if(addNums[i] >= target){
+                        result = (i + 1);
+                        break;
+                    }
+                }
+                if(result == 0){
+                    return result;
+                }
+            } else {
+                for(int i = index + 1; i < addNums.length; i++){
+                    int temp = addNums[i] - addNums[index];
+                    if(temp >= target){
+                        result = Math.min(result, (i - index));
+                        break;
+                    }
+                }
+            }
+            index++;
+        }
+        return result;
+
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -743,6 +826,12 @@ public class Test33 {
         int result13 = new Test33().findMinArrowShots(nums12);
         int[] nums13 = {1,1,1,2,2};
         int[] result14 = new Test33().rearrangeBarcodes((nums13));
-        System.out.println(Arrays.toString(result14));
+        String[] nums14 = {"zaaaz"};
+        int[] result15 = new Test33().getQuery(nums14);
+        String[] nums15 = "hello".split("");
+        int[] nums16 = {-1,0,1,2,-1,-4};
+        System.out.println(new Test33().threeSum(nums16));
+        int[] nums17 = {2,3,1,2,4,3};
+        System.out.println(new Test33().minSubArrayLen(7, nums17));
     }
 }
