@@ -757,6 +757,542 @@ public class Test33 {
 
     }
 
+    public int lengthOfLIS(int[] nums) {
+        List<List<Integer>> tempLists = makeLists(nums);
+        int max = 0;
+        for(List<Integer> list : tempLists){
+            int length = list.size();
+            max = Math.max(length, max);
+        }
+        return max;
+    }
+
+    public List<List<Integer>> makeLists(int[] nums) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        for(int n : nums){
+            if(result.size() == 0){
+                List<Integer> list1 = new ArrayList<Integer>();
+                list1.add(n);
+                result.add(list1);
+            } else {
+                int judge = -1;
+                for(int i = 0; i < result.size(); i++){
+                    if(result.get(i).size() == 1){
+                        if(result.get(i).get(0) >= n){
+                            judge = -1;
+                        } else {
+                            judge = i;
+                            result.get(i).add(n);
+                        }
+                    } else {
+                        List<Integer> list2 = result.get(i);
+                        if(n <= list2.get(0)){
+                            judge = -1;
+                        } else {
+                            if(n > list2.get(list2.size() - 1)){
+                                judge = i;
+                                result.get(i).add(n);
+                            } else {
+                                List<Integer> list3 = new ArrayList<Integer>();
+                                for(int n1 : list2){
+                                    if(n1 < n){
+                                        list3.add(n1);
+                                    }
+                                }
+                                result.add(list3);
+                            }
+
+                        }
+                    }
+                }
+                if(judge == -1){
+                    List<Integer> list4 = new ArrayList<Integer>();
+                    list4.add(n);
+                    result.add(list4);
+                }
+            }
+        }
+        return result;
+    }
+
+    public int numFriendRequests(int[] ages) {
+        int request = 0;
+        Arrays.sort(ages);
+        for(int i = 0; i < ages.length; i++){
+            int age1 = ages[i];
+            double limit1 = 0.5 * age1 + 7;
+            for(int j = 0; j < ages.length; j++){
+                if(i == j){
+                } else {
+                    int age2 = ages[j];
+                    if(age2 > limit1 && age2 <= age1 && (age1 <= 100 || age2 >= 100)){
+                        request++;
+                    }
+                }
+            }
+        }
+        return request;
+    }
+
+    public int findNthDigit(int n) {
+        Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
+        int i = 1;
+        int k = 9;
+        long v = 9L;
+        while(v <= Integer.MAX_VALUE){
+            map.put(k, (int)v);
+            i++;
+            k = (int) (9 * Math.pow(10, (i - 1)) + k);
+            v = (long) (i * 9 * Math.pow(10, (i - 1)) + v);
+        }
+        Set<Integer> set = map.keySet();
+        List<Integer> keyList = new ArrayList<>(set);
+        if(n <= keyList.get(0)){
+            return n;
+        }
+        for (int j = 0; j < keyList.size(); j++) {
+            if(n <= map.get(keyList.get(j))){
+                k = keyList.get(j - 1);
+                break;
+            } else {
+                k = keyList.get(j);
+            }
+        }
+        int length = String.valueOf(k).length() + 1;
+        int num = (n - map.get(k)) / length;
+        int leftNum = (n - map.get(k)) % length;
+        num += k;
+        if(leftNum == 0){
+            String[] num1 = String.valueOf(num).split("");
+            return Integer.parseInt(num1[num1.length - 1]);
+        }
+        num++;
+        String[] num2 = String.valueOf(num).split("");
+        return Integer.parseInt(num2[leftNum - 1]);
+    }
+
+    public int subarraysWithKDistinct(int[] nums, int k) {
+        int left = 0;
+        int right = 0;
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        int result = 0;
+        while(left < nums.length || right < nums.length) {
+            if (map.size() <= k && right < nums.length) {
+                if (map.containsKey(nums[right])) {
+                    int temp = map.get(nums[right]);
+                    temp++;
+                    map.put(nums[right], temp);
+                } else {
+                    map.put(nums[right], 1);
+                }
+                right++;
+            } else {
+                int temp1 = map.get(nums[left]);
+                if (map.size() >= k) {
+                    int mid = left;
+                    Set<Integer> set = new HashSet<Integer>();
+                    while (true) {
+                        set.add(nums[mid]);
+                        if (set.size() == k) {
+                            break;
+                        }
+                        mid++;
+                    }
+                    if(map.size() > k){
+                        result += (right - mid - 1);
+                    } else {
+                        result += (right - mid);
+                    }
+
+                }
+                if (temp1 > 1) {
+                    temp1--;
+                    map.put(nums[left], temp1);
+                } else if (temp1 == 1) {
+                    map.remove(nums[left]);
+                }
+                left++;
+            }
+        }
+        return result;
+    }
+
+    public int carFleet(int target, int[] position, int[] speed) {
+        Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
+        for(int i = 0; i < position.length; i++){
+            map.put(position[i], speed[i]);
+        }
+        Set<Integer> set = map.keySet();
+        List<Integer> keyList = new ArrayList<Integer>(set);
+        int result = 1;
+        if(position.length == 1){
+            return result;
+        }
+        int j = keyList.size() - 1;
+        for(int i = keyList.size() - 2; i >= 0; i--){
+            int time1 = (target - keyList.get(j)) / map.get(keyList.get(j));
+            int distance2 = keyList.get(j) - keyList.get(i);
+            int velocity2 = map.get(keyList.get(i)) - map.get(keyList.get(j));
+            if(velocity2 <= 0){
+                result++;
+                j = i;
+            }
+        }
+        return result;
+    }
+
+    public int numSubseq(int[] nums, int target) {
+        Arrays.sort(nums);
+        long result = 0;
+        for(int i = 0; i < nums.length; i++){
+            int right = findRightIndex(nums, target, i);
+            if(right == -1){
+                result += 0;
+            } else {
+                result += sumIndex(i, right);
+            }
+        }
+        return (int) result % 1000000007;
+    }
+
+    public long sumIndex(int left, int right){
+        return (long)Math.pow(2, (right - left));
+    }
+
+    public int findRightIndex(int[] nums, int target, int left){
+        int right = nums.length - 1;
+        int mid = (left + right) / 2;
+        while(left < right){
+
+            if((nums[left] + nums[mid]) == target){
+                return mid;
+            } else {
+                int mid1 = mid + 1;
+                int mid2 = mid - 1;
+                if((nums[left] + nums[mid]) > target) {
+                    if(mid2 < left){
+                        return -1;
+                    } else {
+                        if((nums[left] + nums[mid2]) < target){
+                            return mid2;
+                        } else {
+                            mid--;
+                        }
+                    }
+                } else {
+                    if(mid1 == nums.length){
+                        return mid;
+                    } else {
+                        if((nums[left] + nums[mid1]) > target){
+                            return mid;
+                        } else {
+                            mid++;
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int removeCoveredIntervals(int[][] intervals) {
+        Map<Integer, List<Integer>> map = new TreeMap<Integer, List<Integer>>();
+        for (int[] interval : intervals) {
+            if (map.containsKey(interval[0])) {
+                List<Integer> list = map.get(interval[0]);
+                list.add(interval[1]);
+                map.put(interval[0], list);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(interval[1]);
+                map.put(interval[0], list);
+            }
+        }
+        Set<Integer> set = map.keySet();
+        List<Integer> keyList = new ArrayList<Integer>(set);
+        for(int key : keyList){
+            List<Integer> list = map.get(key);
+            Collections.sort(list);
+            //Collections.reverse(list);
+            map.put(key, list);
+        }
+        System.out.println(map);
+        int result = 1;
+        for(int i = 0 ; i < keyList.size() - 1; i++){
+            int max1 = map.get(keyList.get(i)).get(map.get(keyList.get(i)).size() - 1);
+            int max2 = map.get(keyList.get(i + 1)).get(map.get(keyList.get(i + 1)).size() - 1);
+            if(max1 < max2){
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public int longestOnes(int[] nums, int k) {
+        List<Integer> zeroIndex = new ArrayList<Integer>();
+        int index = 0;
+        int result = 0;
+        int zeroCount = 0;
+        while(index < nums.length){
+            if(nums[index] == 1){
+                index++;
+            } else {
+                zeroCount++;
+                zeroIndex.add(index);
+                if(zeroIndex.size() > k){
+                    int temp = zeroIndex.get(zeroIndex.size() - 1) - zeroIndex.get(0);
+                    if(zeroIndex.get(0) > 0){
+                        int index2 = zeroIndex.get(0) - 1;
+                        while(nums[index2] == 1){
+                            temp++;
+                            index2--;
+                            if(index2 < 0){
+                                break;
+                            }
+                        }
+                    }
+                    result = Math.max(temp, result);
+                    zeroIndex.remove(0);
+                }
+                index++;
+            }
+        }
+        if(zeroCount <= k){
+            return nums.length;
+        }
+        return result;
+    }
+
+    public int[] platesBetweenCandles(String s, int[][] queries) {
+        String[] data = s.split("");
+        List<Integer> verticalIndex = new ArrayList<Integer>();
+        for(int i = 0 ; i < data.length; i++){
+            if(data[i].equals("|")){
+                verticalIndex.add(i);
+            }
+        }
+        int[] result = new int[queries.length];
+        for(int i = 0; i < result.length; i++){
+            result[i] = calDifferences(verticalIndex, queries[i][0], queries[i][1]);
+        }
+        return result;
+
+    }
+
+    private int calDifferences(List<Integer> verticalIndex, int start, int end){
+        int left = findLeft(verticalIndex, start);
+        int right = findRight(verticalIndex, end);
+        if(left > right){
+            return 0;
+        }
+        int leftIndex = verticalIndex.indexOf(left);
+        int rightIndex = verticalIndex.indexOf(right);
+        return (right - left - rightIndex + leftIndex);
+    }
+
+    private int findLeft(List<Integer> verticalIndex, int start){
+        if(verticalIndex.contains(start)){
+            return start;
+        }
+        int result = 0;
+        int left = 0;
+        int right = verticalIndex.size() - 1;
+        while(left < right){
+            int mid = left + right >> 1;
+            if(verticalIndex.get(mid) > start){
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        result = verticalIndex.get(left);
+        return result;
+    }
+
+    private int findRight(List<Integer> verticalIndex, int end){
+        if(verticalIndex.contains(end)){
+            return end;
+        }
+        int result = 0;
+        int left = 0;
+        int right = verticalIndex.size() - 1;
+        while(left < right){
+            int mid = left + right >> 1;
+            if(verticalIndex.get(mid) > end){
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        if(verticalIndex.get(right) > end){
+            result = verticalIndex.get(right - 1);
+        } else {
+            result = verticalIndex.get(right);
+        }
+
+        return result;
+    }
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Set<List<Integer>> set = new HashSet<List<Integer>>();
+        Arrays.sort(nums);
+        for(int i = 0; i < nums.length - 3; i++){
+            for(int j = i + 1; j < nums.length - 2; j++){
+                long temp1 = nums[i] + nums[j];
+                long target1 = target - temp1;
+                int left = j + 1;
+                int right = nums.length - 1;
+                if((nums[left] + nums[right]) == target1){
+                    List<Integer> list = new ArrayList<Integer>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[left]);
+                    list.add(nums[right]);
+                    set.add(list);
+                }
+                while(left < right){
+                    if((nums[left] + nums[right]) > target1){
+                        right--;
+                    } else if((nums[left] + nums[right]) < target1){
+                        left++;
+                    } else {
+                        List<Integer> list = new ArrayList<Integer>();
+                        list.add(nums[i]);
+                        list.add(nums[j]);
+                        list.add(nums[left]);
+                        list.add(nums[right]);
+                        set.add(list);
+                        left++;
+                    }
+                }
+            }
+        }
+        return new ArrayList<List<Integer>>(set);
+    }
+
+    public int maxDistance(int[] nums1, int[] nums2) {
+        int result = 0;
+        for(int i = 0; i < nums1.length; i++){
+            int left = i;
+            int right = nums2.length - 1;
+            if(nums2[left] < nums1[i]){
+
+            } else {
+                while(left < right){
+                    int mid = left + right >> 1;
+                    if(nums2[mid] >= nums1[i]){
+                        left = mid + 1;
+                        int temp = mid - i;
+                        result = Math.max(temp, result);
+                    } else if(nums2[mid] < nums1[i]){
+                        right = mid;
+                    }
+                    if(left == right){
+                        if(nums2[left] >= nums1[i]){
+                            int temp = left - i;
+                            result = Math.max(temp, result);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public int minOperations(int[] nums, int x) {
+        int sum = 0;
+        int min = Integer.MAX_VALUE;
+        for(int n : nums){
+            sum += n;
+            min = Math.min(min, n);
+        }
+        sum = sum - x;
+        if(sum < 0 || min > x){
+            return -1;
+        }
+        int left = 0;
+        int right = 0;
+        int cal = 0;
+        int result = 0;
+        while(right < nums.length){
+            if(cal < sum){
+                cal += nums[right];
+                right++;
+            } else if(cal > sum){
+                cal -= nums[left];
+                left++;
+            } else {
+                result = Math.max(result, right - left);
+                cal += nums[right];
+                right++;
+            }
+        }
+        return nums.length - result;
+    }
+
+    private int changeAtoB(String answerKey, int k, String b){
+        String[] data = answerKey.split("");
+        List<String> indexA = new ArrayList<String>();
+        indexA.add("-1");
+        int right = 0;
+        int result = 0;
+        int count = 0;
+        while(right < data.length){
+            if(data[right].equals(b)){
+                right++;
+            } else {
+                indexA.add(right + "");
+                count++;
+                if(indexA.size() <= (k + 1)){
+                    right++;
+                } else {
+                    int left = Integer.parseInt(indexA.get(0));
+                    if(left == -1){
+                        result = Math.max(result, right);
+                    } else {
+                        int t = right - left - 1;
+                        result = Math.max(result, t);
+                    }
+                    indexA.remove(0);
+                    right++;
+                }
+            }
+        }
+        if(count <= k){
+            return data.length;
+        }
+        return result;
+    }
+
+    public int minSpeedOnTime(int[] dist, double hour) {
+        if (dist.length > Math.ceil(hour)) return -1;
+        int left = 1;
+        int right = Integer.MAX_VALUE;
+        while(left < right){
+            int mid = left + (right - left >> 1);
+            int flag = judge(dist, hour, mid);
+            if(flag == 0){
+                return mid;
+            } else if(flag == 1){
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return right;
+    }
+
+    private int judge(int[] dist, double hour, int speed){
+        double time = 0;
+        for(int i = 0; i < dist.length - 1; i++){
+            double t = (double) dist[i] / speed;
+            time += Math.ceil(t);
+        }
+        time += (double) dist[dist.length - 1] / speed;
+        return Double.compare(time, hour);
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -830,8 +1366,22 @@ public class Test33 {
         int[] result15 = new Test33().getQuery(nums14);
         String[] nums15 = "hello".split("");
         int[] nums16 = {-1,0,1,2,-1,-4};
-        System.out.println(new Test33().threeSum(nums16));
         int[] nums17 = {2,3,1,2,4,3};
-        System.out.println(new Test33().minSubArrayLen(7, nums17));
+        int[] nums18 = {10,9,2,5,3,7,101,18};
+        int[] nums19 = {101,56,69,48,30};
+        int result16 = new Test33().findNthDigit(Integer.MAX_VALUE);
+        int[] nums20 = {1,2,1,2,3};
+        int[] nums21 = {4,0,5,3,1,2};
+        int[] nums22 = {6,10,9,6,7,2};
+        int[] nums23 = {2,3,3,4,6,7};
+        int[][] nums24 = {{1,4},{3,6},{2,8},{3,9},{3,8}};
+        int[] nums25 = {0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1};
+        int[][] nums26 = {{4, 10}};
+        int[] nums27 = {1000000000,1000000000,1000000000,1000000000};
+        int[] nums28 = {55,30,5,4,2};
+        int[] nums29 = {100,20,10,10,5};
+        int[] nums30 = {1,1,4,2,3};
+        int[] nums31 = {1,3,2};
+        System.out.println(new Test33().minSpeedOnTime(nums31, 2.7));
     }
 }
