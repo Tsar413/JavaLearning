@@ -1293,6 +1293,677 @@ public class Test33 {
         return Double.compare(time, hour);
     }
 
+    public int maxOperations(int[] nums, int k) {
+        Arrays.sort(nums);
+        int left = 0;
+        int right = nums.length - 1;
+        int result = 0;
+        while(left < right){
+            if(nums[left] + nums[right] > k){
+                right--;
+            } else if(nums[left] + nums[right] < k){
+                left++;
+            } else {
+                result++;
+                left++;
+                right--;
+            }
+        }
+        return result;
+    }
+
+    public int jump(int[] nums) {
+        int index = 0;
+        int result = 1;
+        int jumpIndex = 0;
+        if(nums.length == 1){
+            return 0;
+        }
+        while(index < nums.length){
+            int range = nums[index];
+            if(index == nums.length - 1){
+                break;
+            }
+            if((index + range) < nums.length - 1){
+                for(int i = index; i < (index + range); i++){
+                    jumpIndex = Math.max(jumpIndex, (nums[i] + i));
+                }
+                index = jumpIndex;
+                result++;
+            } else {
+                for(int i = index; i < nums.length; i++){
+                    jumpIndex = Math.max(jumpIndex, (nums[i] + i));
+                }
+                if(jumpIndex >= nums.length){
+                    index = nums.length - 1;
+                } else {
+                    index = jumpIndex;
+                    result++;
+                }
+
+            }
+        }
+        return result;
+    }
+
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int positive = 0;
+        int negative = 0;
+        int min = Integer.MAX_VALUE;
+        int minIndex = 0;
+        int[] data = new int[gas.length];
+        for(int i = 0; i < data.length; i++){
+            data[i] = gas[i] - cost[i];
+            if(data[i] >= 0){
+                positive += data[i];
+            }
+            if(data[i] < 0){
+                negative += data[i];
+            }
+            if(data[i] < min){
+                min = data[i];
+                minIndex = i;
+            }
+        }
+        if(positive + negative < 0){
+            return -1;
+        }
+        if(min >= 0){
+            return 0;
+        }
+        int count = 0;
+        int startIndex = 0;
+        if(minIndex != data.length - 1){
+            startIndex = minIndex + 1;
+        }
+        int sum = 0;
+        int index= startIndex;
+        while(count < data.length){
+
+            sum += data[index];
+            if(sum < 0){
+                count = 0;
+                sum = 0;
+                startIndex++;
+                if(startIndex == data.length){
+                    startIndex = 0;
+                }
+                index= startIndex;
+            } else {
+                index++;
+                if(index == data.length){
+                    index = 0;
+                }
+                count++;
+            }
+        }
+        return startIndex;
+    }
+
+    public int eraseOverlapIntervals(int[][] intervals) {
+        Map<Integer, List<Integer>> map = new TreeMap<Integer, List<Integer>>();
+        for(int i = 0; i < intervals.length; i++){
+            if(map.containsKey(intervals[i][1])){
+                map.get(intervals[i][1]).add(intervals[i][0]);
+            } else {
+                List<Integer> temp = new ArrayList<Integer>();
+                temp.add(intervals[i][0]);
+                map.put(intervals[i][1], temp);
+            }
+        }
+        int[][] data = new int[intervals.length][2];
+        List<Integer> keyList = new ArrayList<Integer>(map.keySet());
+        int tempNum = 0;
+        for(int i = 0; i < keyList.size(); i++){
+            List<Integer> list = map.get(keyList.get(i));
+            Collections.sort(list);
+            for(int j = list.size() - 1; j >= 0; j--){
+                data[tempNum][0] = list.get(j);
+                data[tempNum][1] = keyList.get(i);
+                tempNum++;
+            }
+        }
+        int count = 1;
+        int end = data[0][1]; // 记录区间分割点
+        for (int i = 1; i < data.length; i++) {
+            if (end <= data[i][0]) {
+                end = data[i][1];
+                count++;
+            }
+        }
+
+        return data.length - count;
+    }
+
+    public boolean isPossible(int[] nums) {
+        Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
+        for(int n : nums){
+            if(map.containsKey(n)){
+                int t = map.get(n);
+                t++;
+                map.put(n, t);
+            } else {
+                map.put(n, 1);
+            }
+        }
+        List<Integer> keyList = new ArrayList<Integer>(map.keySet());
+        List<List<Integer>> storage = new ArrayList<List<Integer>>();
+        int count = 0;
+        for(int i = 0; i < keyList.size() - 1; i++){
+            if(map.get(keyList.get(i)) != null){
+                if(keyList.get(i + 1) - keyList.get(i) == 1 && count < 2 && map.get(keyList.get(i)) > 0 && map.get(keyList.get(i + 1)) > 0){
+                    count++;
+                }
+                if(count == 2){
+                    count = 0;
+                    List<Integer> list = new ArrayList<Integer>();
+                    list.add(keyList.get(i - 1));
+                    list.add(keyList.get(i));
+                    list.add(keyList.get(i + 1));
+                    storage.add(list);
+                    int t1 = map.get(keyList.get(i - 1));
+                    t1--;
+                    if(t1 == 0){
+                        map.remove(keyList.get(i - 1));
+                    } else {
+                        map.put(keyList.get(i - 1), t1);
+                    }
+                    int t2 = map.get(keyList.get(i));
+                    t2--;
+                    if(t2 == 0){
+                        map.remove(keyList.get(i));
+                    } else {
+                        map.put(keyList.get(i), t2);
+                    }
+                    int t3 = map.get(keyList.get(i + 1));
+                    t3--;
+                    if(t3 == 0){
+                        map.remove(keyList.get(i + 1));
+                    } else {
+                        map.put(keyList.get(i + 1), t3);
+                    }
+                }
+            }
+
+        }
+        if(map.isEmpty()){
+            return true;
+        } else {
+            List<Integer> mapLeft = new ArrayList<Integer>(map.keySet());
+            for(List<Integer> storageLeaf : storage){
+                for(int i = 0; i < mapLeft.size(); i++){
+                    if(mapLeft.get(i) - storageLeaf.get(storageLeaf.size() - 1) == 1){
+                        storageLeaf.add(mapLeft.get(i));
+                        int t = map.get(mapLeft.get(i));
+                        t--;
+                        if(t == 0){
+                            map.remove(mapLeft.get(i));
+                        } else {
+                            map.put(mapLeft.get(i), t);
+                        }
+                    }
+                }
+                mapLeft = new ArrayList<Integer>(map.keySet());
+            }
+        }
+        return map.isEmpty();
+    }
+
+    public int findLongestChain(int[][] pairs) {
+        Map<Integer, List<Integer>> map = new TreeMap<Integer, List<Integer>>();
+        int result = 0;
+        for(int i = 0; i < pairs.length; i++){
+            if(map.containsKey(pairs[i][1])){
+                map.get(pairs[i][1]).add(pairs[i][0]);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(pairs[i][0]);
+                map.put(pairs[i][1], list);
+            }
+        }
+        List<Integer> keyList = new ArrayList<Integer>(map.keySet());
+        int judge = keyList.get(0);
+        for(int i = 1; i < keyList.size(); i++){
+            List<Integer> list = map.get(keyList.get(i));
+            Collections.sort(list);
+            int minIndex = -2000;
+            for(int n : list){
+                if(judge < n){
+                    minIndex = n;
+                    judge = keyList.get(i);
+                    break;
+                }
+            }
+            if(minIndex != -2000){
+                result++;
+            }
+        }
+        result++;
+        return result;
+    }
+
+    public int maxSatisfaction(int[] satisfaction) {
+        Integer[] temp1 = new Integer[satisfaction.length];
+        for (int i = 0; i < satisfaction.length; i++) {
+            temp1[i] = satisfaction[i];
+        }
+        Arrays.sort(temp1, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+
+        });
+        for (int i = 0; i < satisfaction.length; i++) {
+            satisfaction[i] = temp1[i];
+        }
+        int add = satisfaction[0];
+        int result = 0;
+        int temp = satisfaction[0];
+        result = Math.max(result, temp);
+        for(int i = 1; i < satisfaction.length; i++){
+            add += satisfaction[i];
+            temp += add;
+            result = Math.max(result, temp);
+        }
+        return result;
+    }
+
+    public String longestDiverseString(int a, int b, int c) {
+        String maxString = judgeMaxString(a, b, c);
+        StringBuilder result = null;
+        if(maxString.equals("a")){
+            a = changeMaxStringNum(maxString, a, b, c);
+            int t = Math.max(b, c);
+            a -= t;
+            result = makeOringinalString(t, b, c);
+            if(a == 0){
+                return result.toString();
+            } else {
+                result = makefinalString(result, "a", a);
+                return result.toString();
+            }
+        } else if(maxString.equals("b")){
+            b = changeMaxStringNum(maxString, a, b, c);
+            int t = Math.max(a, c);
+            b -= t;
+            result = makeOringinalString(a, t, c);
+            if(b == 0){
+                return result.toString();
+            } else {
+                result = makefinalString(result, "b", b);
+                return result.toString();
+            }
+        } else {
+            c = changeMaxStringNum(maxString, a, b, c);
+            int t = Math.max(a, b);
+            c -= t;
+            result = makeOringinalString(a, b, t);
+            if(c == 0){
+                return result.toString();
+            } else {
+                result = makefinalString(result, "c", c);
+                return result.toString();
+            }
+        }
+
+    }
+
+    public StringBuilder makefinalString(StringBuilder originalString, String word, int num){
+        if(num == 1){
+            originalString.append(word);
+            return originalString;
+        } else {
+            int index = 0;
+            while(num > 0){
+                if(index == originalString.length()){
+                    originalString.append(word);
+                    index++;
+                    num--;
+                } else {
+                    if(Character.toString(originalString.charAt(index)).equals(word)){
+                        originalString.insert(index, word);
+                        index += 3;
+                        num--;
+                    } else {
+                        if(num == 1){
+                            originalString.insert(index, word);
+                        } else {
+                            originalString.insert(index, word);
+                            originalString.insert(index, word);
+                        }
+                        index += 3;
+                        num -= 2;
+                    }
+                }
+
+            }
+            return originalString;
+        }
+    }
+
+    public StringBuilder makeOringinalString(int a, int b, int c){
+        StringBuilder originalString = new StringBuilder();
+        while(a > 0 || b > 0 || c > 0){
+            if(a > 0 && b > 0 && c > 0){
+                originalString.append("a");
+                originalString.append("b");
+                originalString.append("c");
+                a--;
+                b--;
+                c--;
+            } else if(a == 0 && b > 0 && c > 0) {
+                originalString.append("b");
+                originalString.append("c");
+                b--;
+                c--;
+            } else if(a > 0 && b == 0 && c > 0) {
+                originalString.append("a");
+                originalString.append("c");
+                a--;
+                c--;
+            } else if(a > 0 && b > 0 && c == 0) {
+                originalString.append("a");
+                originalString.append("b");
+                a--;
+                b--;
+            } else if(a == 0 && b == 0 && c > 0) {
+                originalString.append("c");
+                c--;
+            } else if(a == 0 && b > 0 && c == 0) {
+                originalString.append("b");
+                b--;
+            } else if(a > 0 && b == 0 && c == 0) {
+                originalString.append("a");
+                a--;
+            }
+        }
+        return originalString;
+    }
+
+    public int changeMaxStringNum(String maxString, int a, int b, int c){
+        if(maxString.equals("a")){
+            int max = (b + c + 1) * 2;
+            if(max < a){
+                return max;
+            } else {
+                return a;
+            }
+        } else if(maxString.equals("b")){
+            int max = (a + c + 1) * 2;
+            if(max < b){
+                return max;
+            } else {
+                return b;
+            }
+        } else {
+            int max = (a + b + 1) * 2;
+            if(max < c){
+                return max;
+            } else {
+                return c;
+            }
+        }
+    }
+
+    public String judgeMaxString(int a, int b, int c){
+        if(a > b){
+            if(b > c){
+                return "a";
+            } else {
+                if(c > a){
+                    return "c";
+                } else {
+                    return "a";
+                }
+            }
+        } else {
+            if(a > c){
+                return "b";
+            } else {
+                if(b > c){
+                    return "b";
+                } else {
+                    return "c";
+                }
+            }
+        }
+    }
+
+    public int minInsertions(String s) {
+        String[] data = s.split("");
+        int count = 0;
+        int count1 = 0;
+        int count2 = 0;
+        boolean flag = false;
+        if(data[0].equals("(")){
+            flag = true;
+        }
+        int result = 0;
+        for(int i = 0; i < data.length; i++){
+            if(data[i].equals("(")){
+                flag = true;
+                if(count2 > 0 && count1 > 0){
+                    count2--;
+                    count1--;
+                    result++;
+                }
+                if(count1 == 1){
+                    result++;
+                    count1 = 0;
+                }
+                if(count1 < 0){
+                    int t = Math.abs(count1);
+                    if(t % 2 == 0){
+                        result += (t / 2);
+                    } else {
+                        int t1 = ((t - 1) / 2);
+                        t1 += 2;
+                        result += t1;
+                    }
+                    count1 = 0;
+                }
+                count2++;
+                count1 += 2;
+            }
+            if(flag && data[i].equals(")")){
+                count1--;
+            }
+            if(!flag){
+                count++;
+            }
+        }
+
+        if(count > 0){
+            if(count % 2 == 0){
+                result += (count / 2);
+            } else {
+                int t = ((count - 1) / 2);
+                t += 2;
+                result += t;
+            }
+        }
+        if(count1 > 0){
+            result += count1;
+        }
+        if(count1 < 0){
+            int t = Math.abs(count1);
+            if(t % 2 == 0){
+                result += (t / 2);
+            } else {
+                int t1 = ((t - 1) / 2);
+                t1 += 2;
+                result += t1;
+            }
+        }
+        return result;
+    }
+
+    public int furthestBuilding(int[] heights, int bricks, int ladders) {
+        int[] diff = new int[heights.length - 1];
+        for(int i = 0; i < heights.length - 1; i++){
+            diff[i] = heights[i + 1] - heights[i];
+            if(diff[i] < 0){
+                diff[i] = 0;
+            }
+        }
+        int t1 = bricksFirst(diff, bricks, ladders);
+        int t2 = laddersFirst(diff, bricks, ladders);
+        return Math.max(t1, t2);
+    }
+
+    public int bricksFirst(int[] diff, int bricks, int ladders){
+        int result = 0;
+        for(int n : diff){
+            if(n <= 0){
+                result++;
+            } else {
+                if(n <= bricks){
+                    result++;
+                    bricks -= n;
+                } else {
+                    if(ladders > 0){
+                        result++;
+                        ladders--;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public int laddersFirst(int[] diff, int bricks, int ladders){
+        int result = 0;
+        for(int n : diff){
+            if(n <= 0){
+                result++;
+            } else {
+                if(ladders > 0){
+                    result++;
+                    ladders--;
+                } else {
+                    if(n <= bricks){
+                        bricks -= n;
+                        result++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Integer> busiestServers(int k, int[] arrival, int[] load) {
+        Map<Integer, Integer> server = new HashMap<Integer, Integer>();
+        for(int i = 0; i < k; i++){
+            server.put(i, 0);
+        }
+        List<Integer> serverList = new ArrayList<Integer>(server.keySet());
+        List<Integer> countList = new ArrayList<Integer>();
+        countList = getCountList(server, serverList, countList, arrival, load);
+        Map<Integer, List<Integer>> result = new HashMap<Integer, List<Integer>>();
+        int max = -1;
+        for(int i = 0; i < countList.size(); i++){
+            max = Math.max(max, countList.get(i));
+            List<Integer> list;
+            if(result.containsKey(countList.get(i))){
+                list = result.get(countList.get(i));
+            } else {
+                list = new ArrayList<Integer>();
+            }
+            list.add(i);
+            result.put(countList.get(i), list);
+        }
+
+        return result.get(max);
+    }
+
+    public List<Integer> getCountList(Map<Integer, Integer> server, List<Integer> serverList
+            , List<Integer> countList, int[] arrival, int[] load){
+        int lastArrivalTime = arrival[0];
+        int freeServer = 0;
+        for(int i = 0; i < arrival.length; i++){
+
+            if(i > 0){
+                lastArrivalTime = arrival[i - 1];
+                for(int n : serverList){
+                    if(server.get(n) != 0){
+                        int serverTime = server.get(n);
+                        serverTime = serverTime - (arrival[i] - lastArrivalTime);
+                        if(serverTime < 0){
+                            serverTime = 0;
+                        }
+                        server.put(n, serverTime);
+                    }
+                }
+                int count1 = serverList.size();
+                boolean flag = false;
+                if(server.get(i % serverList.size()) == 0){
+                    freeServer = i % serverList.size();
+                    flag = true;
+                } else {
+                    freeServer = i % serverList.size();
+                    for (int j = 1; j < count1; j++) {
+                        if(freeServer + j >= serverList.size()){
+                            if(server.get(freeServer + j - serverList.size()) == 0){
+                                freeServer = freeServer + j - serverList.size();
+                                flag = true;
+                                break;
+                            }
+                        } else {
+                            if(server.get(freeServer + j) == 0){
+                                freeServer = freeServer + j;
+                                flag = true;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+
+                if(flag){
+                    server.put(freeServer, load[i]);
+                    if (freeServer > countList.size() - 1) {
+                        countList.add(1);
+                    } else {
+                        int count = countList.get(freeServer);
+                        count++;
+                        countList.set(freeServer, count);
+                    }
+                    if(freeServer == serverList.size()){
+                        freeServer = 0;
+                    }
+                }
+
+            }
+            if(i == 0){
+                server.put(0, load[0]);
+                countList.add(1);
+            }
+        }
+        return countList;
+    }
+
+    public int wateringPlants(int[] plants, int capacity) {
+        int result = 0;
+        int storage = capacity;
+        for(int i = 0; i < plants.length; i++){
+            if(storage >= plants[i]){
+                storage -= plants[i];
+                result++;
+
+            } else {
+                storage = capacity;
+                result += (2 * (i + 1) - 1);
+                storage -= plants[i];
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -1382,6 +2053,18 @@ public class Test33 {
         int[] nums29 = {100,20,10,10,5};
         int[] nums30 = {1,1,4,2,3};
         int[] nums31 = {1,3,2};
-        System.out.println(new Test33().minSpeedOnTime(nums31, 2.7));
+        int[] nums32 = {1,3,2,4};
+        int[] nums33 = {1,2};
+        int[] nums34 = {5,1,2,3,4};
+        int[] nums35 = {4,4,1,5,1};
+        int[][] nums36 = {{1,2},{2,3},{3,4},{1,3}};
+        int[] nums37 = {1,2,3,3,4,4,5,5};
+        int[][] nums38 = {{5,9},{-1,8},{-6,-2},{8,9},{4,8},{3,6},
+                {2,6},{5,9},{-1,6},{-8,-7}};
+        int[] nums39 = {4,2,7,6,9,14,12};
+        int[] nums40 = {2,3,4,8};
+        int[] nums41 = {3,2,4,3};
+        int[] nums42 = {2,2,3,3};
+        System.out.println(new Test33().wateringPlants(nums42, 5));
     }
 }
