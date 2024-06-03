@@ -1964,6 +1964,271 @@ public class Test33 {
         return result;
     }
 
+    public double maxAverageRatio(int[][] classes, int extraStudents) {
+        Map<Double, List<Integer>> data = new TreeMap<Double, List<Integer>>();
+        for(int i = 0; i < classes.length; i++){
+            double key = (double) classes[i][0] / classes[i][1];
+            if(data.containsKey(key)){
+                List<Integer> list = data.get(key);
+                list.add(i);
+                data.put(key, list);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(i);
+                data.put(key, list);
+            }
+        }
+        for(int i = 0; i < extraStudents; i++){
+            int addIndex = 0;
+            double maxTempRate = 0;
+            for (int j = 0; j < classes.length; j++) {
+                double tempRate1 = (double) classes[j][0] / classes[j][1];
+                double tempRate2 = (double) (classes[j][0] + 1) / (classes[j][1] + 1);
+                if(maxTempRate < (tempRate2 - tempRate1)){
+                    maxTempRate = (tempRate2 - tempRate1);
+                    addIndex = j;
+                }
+            }
+            List<Integer> valueList = data.get((double) classes[addIndex][0] / classes[addIndex][1]);
+            int index = valueList.get(0);
+            valueList.remove(0);
+            if(valueList.size() <= 0){
+                data.remove((double) classes[addIndex][0] / classes[addIndex][1]);
+            } else {
+                data.put((double) classes[addIndex][0] / classes[addIndex][1], valueList);
+            }
+            classes[index][0] = classes[index][0] + 1;
+            classes[index][1] = classes[index][1] + 1;
+            double newRate = (double) classes[index][0] / classes[index][1];
+            if(data.containsKey(newRate)){
+                List<Integer> list = data.get(newRate);
+                list.add(index);
+                data.put(newRate, list);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(index);
+                data.put(newRate, list);
+            }
+        }
+        List<Double> keyList = new ArrayList<Double>(data.keySet());
+        double sum = 0;
+        for(double d : keyList){
+            int num = data.get(d).size();
+            sum += (d * num);
+        }
+        return sum / (classes.length);
+    }
+
+    public List<List<Integer>> findWinners(int[][] matches) {
+        List<Integer> list0 = new ArrayList<Integer>();
+        List<Integer> list1 = new ArrayList<Integer>();
+        List<Integer> list2 = new ArrayList<Integer>();
+        for(int i = 0; i < matches.length; i++){
+            for (int j = 0; j < 2; j++) {
+                if(j == 0){
+                    if(list0.size() == 0 && !list2.contains(matches[i][0]) && !list1.contains(matches[i][0])){
+                        list0.add(matches[i][0]);
+                    } else if(!list0.contains(matches[i][0]) && !list1.contains(matches[i][0]) && !list2.contains(matches[i][0])){
+                        list0.add(matches[i][0]);
+                    }
+                } else {
+                    if(list1.size() == 0 && !list2.contains(matches[i][1])){
+                        list1.add(matches[i][1]);
+                    } else if(!list0.contains(matches[i][1]) && !list1.contains(matches[i][1]) && !list2.contains(matches[i][1])){
+                        list1.add(matches[i][1]);
+                    } else if(list0.contains(matches[i][1]) && !list1.contains(matches[i][1]) && !list2.contains(matches[i][0])){
+                        list0.remove(list0.indexOf(matches[i][1]));
+                        list1.add(matches[i][1]);
+                    } else if(!list0.contains(matches[i][1]) && list1.contains(matches[i][1]) && !list2.contains(matches[i][1])){
+                        list2.add(matches[i][1]);
+                        list1.remove(list1.indexOf(matches[i][1]));
+                    }
+                }
+            }
+
+        }
+        List<List<Integer>> list = new ArrayList<List<Integer>>();
+        Collections.sort(list0);
+        Collections.sort(list1);
+        list.add(list0);
+        list.add(list1);
+        return list;
+    }
+
+    public int[] mostCompetitive(int[] nums, int k) {
+        Map<Integer, List<Integer>> map = new TreeMap<Integer, List<Integer>>();
+        for(int i = 0; i < nums.length; i++){
+            if(map.containsKey(nums[i])){
+                List<Integer> list = map.get(nums[i]);
+                list.add(i);
+                map.put(nums[i], list);
+            } else {
+                List<Integer> list = new ArrayList<Integer>();
+                list.add(i);
+                map.put(nums[i], list);
+            }
+        }
+        int[] result = new int[k];
+        int length = nums.length;
+        int resultIndex = 0;
+        int firstIndex = 0;
+        int secondIndex = 0;
+        int k1 = k;
+        for(int i = 0; i < k1; i++){
+            List<Integer> keyList = new ArrayList<Integer>(map.keySet());
+            for(int key : keyList){
+                List<Integer> valueList = map.get(key);
+                secondIndex = valueList.get(0);
+                if(secondIndex <= (length - k)){
+                    result[resultIndex] = key;
+                    resultIndex++;
+                    k--;
+                    break;
+                }
+            }
+            for(int j = firstIndex; j <= secondIndex; j++){
+                List<Integer> list = map.get(nums[j]);
+                list.remove(list.indexOf(j));
+                if(list.size() == 0){
+                    map.remove(nums[j]);
+                } else {
+                    map.put(nums[j], list);
+                }
+            }
+            firstIndex = secondIndex + 1;
+        }
+        return result;
+    }
+
+    public int minimumDeletions(int[] nums) {
+        int maxIndex = 0;
+        int minIndex = 0;
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] > max){
+                max = nums[i];
+                maxIndex = i;
+            }
+            if(nums[i] < min){
+                min = nums[i];
+                minIndex = i;
+            }
+        }
+        int length = nums.length;
+        int maxLeft = maxIndex + 1;
+        int maxRight = length - maxIndex;
+        int minLeft = minIndex + 1;
+        int minRight = length - minIndex;
+        int deleteMax = 0;
+        int deleteMin = 0;
+        boolean flag1 = true;
+        boolean flag2 = true;
+        if(maxLeft < maxRight){
+            deleteMax = maxLeft;
+        } else {
+            deleteMax = maxRight;
+            flag1 = false;
+        }
+        if(minLeft < minRight){
+            deleteMin = minLeft;
+        } else {
+            deleteMin = minRight;
+            flag2 = false;
+        }
+        int result = 0;
+        if(deleteMax < deleteMin){
+            result += deleteMax;
+            if(flag1 == flag2){
+                result += (deleteMin - deleteMax);
+            } else {
+                result += deleteMin;
+            }
+        } else {
+            result += deleteMin;
+            if(flag1 == flag2){
+                result += (deleteMax - deleteMin);
+            } else {
+                result += deleteMax;
+            }
+        }
+        return result;
+    }
+
+    public int maximumGroups(int[] grades) {
+        Arrays.sort(grades);
+        int count = 0;
+        int sum = 0;
+        int tempCount = 0;
+        int tempSum = 0;
+        int result = 0;
+        for(int i = 0; i < grades.length; i++){
+            if(i == 0){
+                sum = grades[0];
+                count = 1;
+                result++;
+            } else if(i < grades.length - 1) {
+                if(tempCount <= count && tempSum < sum){
+                    tempCount++;
+                    tempSum += grades[i];
+                } else {
+                    count = tempCount;
+                    sum = tempSum;
+                    tempCount = 0;
+                    tempSum = 0;
+                    result++;
+                }
+            } else {
+                if(tempCount < count && tempSum < sum){
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Long> maximumEvenSplit(long finalSum) {
+        long step = 2L;
+        List<Long> result = new ArrayList<Long>();
+        if(finalSum % 2 == 1){
+            return result;
+        }
+        long judge = finalSum / 2;
+        long sum = 0L;
+        long temp = finalSum;
+        while(temp > 0){
+            temp -= step;
+            sum += step;
+            result.add(step);
+            step += 2L;
+        }
+        if(result.contains(temp)){
+            long finalStep = result.get(result.size() - 1);
+            result.remove(result.size() - 1);
+            result.add(finalSum - sum + finalStep);
+        }
+        return result;
+    }
+
+    public long minimumRemoval(int[] beans) {
+        Arrays.sort(beans);
+        int sum = 0;
+        for(int n : beans){
+            sum += n;
+        }
+        int result = Integer.MAX_VALUE;
+        for(int i = 0; i < beans.length; i++){
+            result = Math.min(result, (sum - beans[i] * (beans.length - i)));
+            if (i + 1 == beans.length) {
+                break;
+            }
+            if(beans[i] == beans[i + 1]){
+                i++;
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -2061,10 +2326,15 @@ public class Test33 {
         int[] nums37 = {1,2,3,3,4,4,5,5};
         int[][] nums38 = {{5,9},{-1,8},{-6,-2},{8,9},{4,8},{3,6},
                 {2,6},{5,9},{-1,6},{-8,-7}};
-        int[] nums39 = {4,2,7,6,9,14,12};
+        int[] nums39 = {4,12,5,7,3,18,19,20,3,19};
         int[] nums40 = {2,3,4,8};
         int[] nums41 = {3,2,4,3};
         int[] nums42 = {2,2,3,3};
-        System.out.println(new Test33().wateringPlants(nums42, 5));
+        int[][] nums43 = {{1,2},{3,5},{2,2}};
+        int[][] nums44 = {{1,3},{2,3},{3,6},{5,6},{5,7},{4,5},{4,8},{4,9},{10,4},{10,9}};
+        int[] nums45 = {-1,-53,93,-42,37,94,97,82,46,42,-99,56,-76,-66,-67,-13,10,66,85,-28};
+        int[] nums46 = {2,31,41,31,36,46,33,45,47,8,31,6,12,12,15,35};
+        int[] nums47 = {2,10,3,2};
+        System.out.println(new Test33().minimumRemoval(nums47));
     }
 }
