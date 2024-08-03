@@ -2229,6 +2229,100 @@ public class Test33 {
         return result;
     }
 
+    public int countBattleships(char[][] board) {
+        int result = 0;
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
+                if(i == 0 && j == 0){
+                    if(board[0][0] == 'X'){
+                        result++;
+                    }
+                } else if(i == 0){
+                    if(board[0][j] == 'X' && board[0][j - 1] == '.'){
+                        result++;
+                    }
+                } else if(j == 0){
+                    if(board[i][0] == 'X' && board[i - 1][0] == '.'){
+                        result++;
+                    }
+                } else {
+                    if(board[i][j] == 'X' && board[i - 1][j] == '.' && board[i][j - 1] == '.'){
+                        result++;
+                    }
+                }
+
+            }
+        }
+        return result;
+    }
+
+    public long minimalKSum(int[] nums, int k) {
+        Arrays.sort(nums);
+        int numIndex = 0;
+        long result = 0L;
+        long addNum = 1L;
+        while(k > 0){
+            if(numIndex == nums.length){
+                result += ((addNum + addNum + k - 1) * k / 2);
+                break;
+            } else if(numIndex == 0 && nums[numIndex] <= k && addNum < nums[0]){
+                result += ((addNum + nums[numIndex] - 1) * (nums[numIndex] - 1) / 2);
+                addNum = nums[numIndex];
+                k -= (nums[numIndex] - 1);
+            } else if(numIndex == 0 && nums[numIndex] > k && addNum < nums[0]){
+                result += ((addNum + addNum + k - 1) * k / 2);
+                return result;
+            } else {
+                if(numIndex + 1 == nums.length){
+                    long temp = (long) (nums[numIndex] + nums[numIndex] + k + 1) * k / 2;
+                    result += temp;
+                    break;
+                }
+                if(nums[numIndex + 1] - nums[numIndex] > 1){
+                    int judge = nums[numIndex + 1] - nums[numIndex] - 1;
+                    if(judge < k){
+                        long temp = (long) (nums[numIndex] + nums[numIndex + 1]) / 2 * judge;
+                        result += temp;
+                        numIndex++;
+                        k -= judge;
+                    } else {
+                        long temp = (long) (nums[numIndex] + nums[numIndex] + k + 1) * k / 2;
+                        result += temp;
+                        return result;
+                    }
+                } else {
+                    numIndex++;
+                }
+            }
+
+        }
+        return result;
+    }
+
+    public int maximumBeauty(int[] nums, int k) {
+        Arrays.sort(nums);
+        int[][] data = new int[nums.length][2];
+        for(int i = 0; i < nums.length; i++){
+            data[i][0] = nums[i] - k;
+            data[i][1] = nums[i] + k;
+        }
+        int flag = data[0][0];
+        int result = 0;
+        while(flag < data[nums.length - 1][1]){
+            int temp = 0;
+            for(int i = 0; i < nums.length; i++){
+                if(data[i][0] <= flag && flag <= data[i][1]){
+                    temp++;
+                } else if(flag > data[i][1]){
+                    break;
+                }
+            }
+            result = Math.max(result, temp);
+            flag++;
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         int[] nums1 = {1,2};
         int[] nums2 = {1,1};
@@ -2335,6 +2429,8 @@ public class Test33 {
         int[] nums45 = {-1,-53,93,-42,37,94,97,82,46,42,-99,56,-76,-66,-67,-13,10,66,85,-28};
         int[] nums46 = {2,31,41,31,36,46,33,45,47,8,31,6,12,12,15,35};
         int[] nums47 = {2,10,3,2};
-        System.out.println(new Test33().minimumRemoval(nums47));
+        char[][] nums48 = {{'X','.','.','X'}, {'.','.','.','X'}, {'.','.','.','X'}};
+        int[] nums49 = {5, 57,46};
+        System.out.println(new Test33().maximumBeauty(nums49, 15));
     }
 }
