@@ -6,6 +6,7 @@ public class SimpleHashMap_2023_1_25<K,V> extends AbstractMap<K,V> {
     static final int SIZE = 997;
     @SuppressWarnings("unchecked")
     LinkedList<MapEntry_2023_1_24<K,V>>[] buckets = new LinkedList[SIZE];
+    
     public V put(K key, V value) {
         V oldValue = null;
         int index = Math.abs(key.hashCode()) % SIZE;

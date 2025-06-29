@@ -1,7 +1,5 @@
 package com.company.javaRelearn.Individual_2023_1_31;
 
-import java.util.Objects;
-
 public class Individual implements Comparable<Individual> {
     private static long counter = 0;
     private final long id = counter++;

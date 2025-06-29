@@ -1,0 +1,67 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Exam <|-- Date
+ExamScript <|-- Student
+Exam <|-- ExamScript
+ReportGeneratorWithHTML <|-- Exam
+ReportGeneratorWithoutHTML <|-- Exam
+
+class Date {
+    private int day;
+    private int month;
+    private int year;
+
+    public Date()
+    public Date(int day, int month, int year)
+    public String toString()
+}
+
+class Exam {
+    private String name;
+    private ArrayList<ExamScript> submissions;
+    private Date examDate;
+
+    public Exam(String name)
+    public Exam(String name, Date examDate)
+    public String getName()
+    public ArrayList<ExamScript> getSubmissions()
+}
+
+class ExamScript {
+    private Student student; // Content Coupling
+    private String answer;
+    private Time timeTaken;
+
+    public ExamScript(Student student, String answer, Time timeTaken)
+    public Student getStudent()
+    public String getAnswer()
+    public Time getTimeTaken()
+}
+
+class ReportGenerator {
+    protected String title;
+    public ReportGenerator()
+    public ReportGenerator(String title)
+    public void setTitle(String title)
+    public boolean isSimilar(ExamScript s1, ExamScript s2)
+}
+
+class ReportGeneratorWithHTML extends ReportGenerator {
+    public ReportGeneratorWithHTML(String title)
+    public void print(Exam e)
+}
+
+class ReportGeneratorWithoutHTML extends ReportGenerator {
+    public ReportGeneratorWithoutHTML(String title)
+    public void print(Exam e)
+}
+
+class Student {
+    private int guid;
+    private boolean hasExtraTime;
+    public Student(int guid)
+    public void setExtraTime()
+}
+
+@enduml

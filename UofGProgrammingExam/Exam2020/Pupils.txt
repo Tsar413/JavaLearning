@@ -1,0 +1,3 @@
+A B Help 2 
+A A  1
+T B  0

@@ -1,0 +1,4 @@
+TeachingRequirements{teachingRequirementsId=1, numberRequired=5, subject=Math, startDate=2, endDate=3, nameList=1,aa 2,bb }
+TeachingRequirements{teachingRequirementsId=2, numberRequired=10, subject=CS, startDate=5, endDate=7, nameList= }
+TeachingRequirements{teachingRequirementsId=3, numberRequired=6, subject=CS, startDate=1, endDate=4, nameList= }
+TeachingRequirements{teachingRequirementsId=4, numberRequired=2, subject=Math, startDate=5, endDate=6, nameList= }

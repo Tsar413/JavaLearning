@@ -1,0 +1,8 @@
+Q1.2
+Data coupling is still present, and due to the presence of the basic attribute default in the class, 
+it is important to note that coupling is still present
+
+Q1.4
+The level of coupling is already very low, in fact the coupling is now data coupling, where the values
+ passed are data and one part of the value is passed to another part to achieve the necessary 
+functionality.

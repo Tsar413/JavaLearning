@@ -1,0 +1,6 @@
+PartTimeTeacher{id=1, name=aa, subject=CS, availableMonths=1,2,3,4,5,6,7,8,9,10,11,12}
+PartTimeTeacher{id=2, name=bb, subject=CS, availableMonths=1,2,3,4,5,7,8,9,10,11}
+PartTimeTeacher{id=3, name=cc, subject=Math, availableMonths=4,5,6,7,11,12}
+PartTimeTeacher{id=4, name=dd, subject=Physics, availableMonths=1,2,3,4,5,7,8,9,10,11}
+PartTimeTeacher{id=5, name=ee, subject=CS, availableMonths=1,2,8,9,10,11}
+PartTimeTeacher{id=6, name=ff, subject=English, availableMonths=1,2,3,4,5,7,8,9,10,11}

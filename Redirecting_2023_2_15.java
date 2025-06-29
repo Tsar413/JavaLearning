@@ -6,7 +6,7 @@ public class Redirecting_2023_2_15 {
     public static void main(String[] args) throws IOException {
         PrintStream console = System.out;
         BufferedInputStream in = new BufferedInputStream(
-                new DataInputStream(new FileInputStream("test1/src/com/company/javaRelearn/Redirecting_2023_2_15.java")));
+                new FileInputStream("test1/src/com/company/javaRelearn/Redirecting_2023_2_15.java"));
         PrintStream out = new PrintStream(
                 new BufferedOutputStream(new FileOutputStream("test.out")));
         System.setIn(in);
